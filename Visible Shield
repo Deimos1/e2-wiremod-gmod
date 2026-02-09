@@ -1,0 +1,151 @@
+# This e2 code allows you to make a VISIBLE shield by pressibg 'e'
+
+
+@name VISIBLE SHIELD
+@persist F:entity B:entity L:entity R:entity Roof:entity Roof2:entity Enabled Lock LastPos:vector FreezeTimer
+@trigger
+interval(0)
+
+if (first()) {
+    
+    F = propSpawn("models/hunter/plates/plate4x8.mdl",1)
+    B = propSpawn("models/hunter/plates/plate4x8.mdl",1)
+    L = propSpawn("models/hunter/plates/plate4x8.mdl",1)
+    R = propSpawn("models/hunter/plates/plate4x8.mdl",1)
+    
+   
+    Roof = propSpawn("models/hunter/plates/plate6x6.mdl",1)
+    Roof2 = propSpawn("models/hunter/plates/plate6x6.mdl",1)
+
+    
+    F:setMaterial("models/props_combine/portalball001_sheet")
+    B:setMaterial("models/props_combine/portalball001_sheet")
+    L:setMaterial("models/props_combine/portalball001_sheet")
+    R:setMaterial("models/props_combine/portalball001_sheet")
+    Roof:setMaterial("models/props_combine/portalball001_sheet")
+    Roof2:setMaterial("models/props_combine/portalball001_sheet")
+    
+    
+    F:setRenderMode(3)
+    B:setRenderMode(3)
+    L:setRenderMode(3)
+    R:setRenderMode(3)
+    Roof:setRenderMode(3)
+    Roof2:setRenderMode(3)
+    
+        
+    F:setColor(vec(100,150,255),200)
+    B:setColor(vec(100,150,255),200)
+    L:setColor(vec(100,150,255),200)
+    R:setColor(vec(100,150,255),200)
+    Roof:setColor(vec(255,100,100),200)    #    
+    Roof2:setColor(vec(255,100,100),200)   #    
+
+    Enabled = 0
+    Lock = 0
+    LastPos = owner():pos()
+    FreezeTimer = 0
+}
+
+
+if (owner():keyUse() & !Lock) {
+    Enabled = !Enabled
+    Lock = 1
+}
+if (!owner():keyUse()) { Lock = 0 }
+
+if (!Enabled) {
+    F:setPos(entity():pos())
+    B:setPos(entity():pos())
+    L:setPos(entity():pos())
+    R:setPos(entity():pos())
+    Roof:setPos(entity():pos())
+    Roof2:setPos(entity():pos())
+    exit()
+}
+
+Center = owner():pos() + vec(0,0,50)  #  
+Ang = owner():angles()
+Fwd = Ang:forward()
+Rt  = Ang:right()
+
+D = 150       #   
+RoofH = 90    #   
+
+
+CurrentPos = owner():pos()
+if (CurrentPos:distance(LastPos) < 3) {
+    FreezeTimer++
+} else {
+    FreezeTimer = 0
+}
+
+
+if (FreezeTimer > 15) {
+    #  - 
+    F:setColor(vec(100,255,100),200)
+    B:setColor(vec(100,255,100),200)
+    L:setColor(vec(100,255,100),200)
+    R:setColor(vec(100,255,100),200)
+    Roof:setColor(vec(255,200,100),200)   #  
+    Roof2:setColor(vec(255,200,100),200)  #  
+    
+    F:propFreeze(1)
+    B:propFreeze(1)
+    L:propFreeze(1)
+    R:propFreeze(1)
+    Roof:propFreeze(1)
+    Roof2:propFreeze(1)
+} else {
+    
+    F:setColor(vec(100,150,255),200)
+    B:setColor(vec(100,150,255),200)
+    L:setColor(vec(100,150,255),200)
+    R:setColor(vec(100,150,255),200)
+    Roof:setColor(vec(255,100,100),200)   #  
+    Roof2:setColor(vec(255,100,100),200)  #  
+    
+    F:propFreeze(0)
+    B:propFreeze(0)
+    L:propFreeze(0)
+    R:propFreeze(0)
+    Roof:propFreeze(0)
+    Roof2:propFreeze(0)
+    
+    
+    F:setPos(Center + Fwd*D)
+    F:setAng(ang(90,Ang:yaw(),0))
+    
+    B:setPos(Center - Fwd*D)
+    B:setAng(ang(90,Ang:yaw(),0))
+    
+    L:setPos(Center - Rt*D)
+    L:setAng(ang(90,Ang:yaw()+90,0))
+    
+    R:setPos(Center + Rt*D)
+    R:setAng(ang(90,Ang:yaw()+90,0))
+  
+    
+    Roof:setPos(Center + vec(0,0,RoofH))
+    Roof:setAng(ang(0,Ang:yaw(),0))  # ang(0,...) = 
+    
+      
+    Roof2:setPos(Center + vec(0,0,RoofH) + Fwd*100)
+    Roof2:setAng(ang(0,Ang:yaw(),0))
+    
+    
+    timer("freezeall", 0)
+}
+
+if (clk("freezeall")) {
+    F:propFreeze(1)
+    B:propFreeze(1)
+    L:propFreeze(1)
+    R:propFreeze(1)
+    Roof:propFreeze(1)
+    Roof2:propFreeze(1)
+}
+
+LastPos = CurrentPos
+
+if(duped()){selfDestructAll()}
