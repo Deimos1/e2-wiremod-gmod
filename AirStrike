@@ -1,0 +1,25 @@
+# THIS e2 CODE ALLOWS YOU TO BOMB SOMETHING ON 'E' or USE button. If you don't have SetVelocity on your server so remove SetVelocity string.
+
+
+@name Air Strike Single
+@persist
+@trigger all
+interval(50)
+
+if (owner():keyUse()) {
+    AimPoint = owner():aimPos()
+    
+    #     +    
+    SpawnHeight = 4000
+    SpawnPoint = AimPoint + vec(0,0,SpawnHeight)
+    
+    #  
+    Bomb = propSpawn("models/props_phx/mk-82.mdl", 1)
+    Bomb:setPos(SpawnPoint)
+    Bomb:setAng(ang(90,0,0))
+    Bomb:propFreeze(0)
+    Bomb:setVelocity(vec(0,0,-20000))
+    
+    
+}
+
