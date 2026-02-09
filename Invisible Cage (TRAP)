@@ -1,0 +1,98 @@
+# This code allows you to trap an another pleayer in invisible cage by pressing 'e'
+
+
+
+@name Player Trap (Invisible Static Cage)
+@inputs
+@outputs
+@persist F:entity B:entity L:entity R:entity Floor:entity T1:entity T2:entity Target:entity Lock Active
+@trigger all
+
+interval(50)
+
+if (first()) {
+    print("AIM AT PLAYER AND PRESS E (TOGGLE)")
+    Active = 0
+    Lock = 0
+}
+
+
+if (owner():keyUse() & !Lock) {
+    Lock = 1
+
+    
+    if (Active) {
+        propDeleteAll()
+        Active = 0
+        Target = noentity()
+        print("PLAYER RELEASED")
+        exit()
+    }
+
+    
+    Target = owner():aimEntity()
+    if (!Target:isPlayer()) { exit() }
+
+    Base   = Target:pos()
+    Center = Base + vec(0,0,36)
+    Ang = Target:angles()
+    Fwd = Ang:forward()
+    Rt  = Ang:right()
+
+    D = 26
+    H = 64
+    FloorZ = 4
+
+    
+    F     = propSpawn("models/props_c17/fence01b.mdl", 1)
+    B     = propSpawn("models/props_c17/fence01b.mdl", 1)
+    L     = propSpawn("models/props_c17/fence01b.mdl", 1)
+    R     = propSpawn("models/props_c17/fence01b.mdl", 1)
+    Floor = propSpawn("models/hunter/plates/plate2x4.mdl", 1)
+    T1    = propSpawn("models/props_lab/blastdoor001a.mdl", 1)
+    T2    = propSpawn("models/props_lab/blastdoor001a.mdl", 1)
+
+    
+    F:setPos(Center + Fwd*D)
+    B:setPos(Center - Fwd*D)
+    L:setPos(Center - Rt*D)
+    R:setPos(Center + Rt*D)
+
+    F:setAng(ang(0,Ang:yaw(),0))
+    B:setAng(ang(0,Ang:yaw()+180,0))
+    L:setAng(ang(0,Ang:yaw()+90,0))
+    R:setAng(ang(0,Ang:yaw()-90,0))
+
+    Floor:setPos(Base + vec(0,0,FloorZ))
+    Floor:setAng(ang(0,Ang:yaw(),0))
+
+    T1:setPos(Base + vec(0,0,H))
+    T2:setPos(Base + vec(0,0,H))
+    T1:setAng(ang(0,Ang:yaw(),0))
+    T2:setAng(ang(0,Ang:yaw()+90,0))
+
+    
+    F:setColor(vec(255,255,255),0)
+    B:setColor(vec(255,255,255),0)
+    L:setColor(vec(255,255,255),0)
+    R:setColor(vec(255,255,255),0)
+    Floor:setColor(vec(255,255,255),0)
+    T1:setColor(vec(255,255,255),0)
+    T2:setColor(vec(255,255,255),0)
+
+    
+    F:propFreeze(1)
+    B:propFreeze(1)
+    L:propFreeze(1)
+    R:propFreeze(1)
+    Floor:propFreeze(1)
+    T1:propFreeze(1)
+    T2:propFreeze(1)
+
+    Active = 1
+    print("PLAYER TRAPPED: " + Target:name())
+}
+
+if (!owner():keyUse()) {
+    Lock = 0
+}
